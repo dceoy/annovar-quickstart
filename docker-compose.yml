@@ -1,0 +1,26 @@
+---
+version: '3'
+
+services:
+  annovar:
+    container_name: annovar
+    build:
+      context: build
+      args:
+        http_proxy: ${http_proxy}
+    image: dceoy/annovar:latest
+    user: ${UID}:${GID}
+    userns_mode: host
+    environment:
+      http_proxy: ${http_proxy}
+      https_proxy: ${https_proxy}
+      HTTP_PROXY: ${HTTP_PROXY}
+      HTTPS_PROXY: ${HTTPS_PROXY}
+    volumes:
+      - .:/wd
+    working_dir: /wd
+    entrypoint:
+      - /usr/bin/perl
+    command:
+      - /usr/local/src/annovar/annotate_variation.pl
+      - --help
