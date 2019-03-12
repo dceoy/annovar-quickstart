@@ -2,6 +2,7 @@
 
 set -uex
 
+ANNOVAR_TAR_GZ='./build/annovar.latest.tar.gz'
 DB_DIR='./humandb/'
 BUILD_VER='hg19'
 DB_NAMES=(
@@ -11,10 +12,12 @@ DB_NAMES=(
   snp138
   esp6500siv2_all
   1000g2015aug
-  cosmic80
+  cosmic70
   exac03
   clinvar_20180603
 )
+
+[[ -f "${ANNOVAR_TAR_GZ}" ]] && docker-compose build --pull
 
 [[ -d "${DB_DIR}" ]] || mkdir "${DB_DIR}"
 
