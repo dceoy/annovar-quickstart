@@ -20,7 +20,6 @@ services:
       - .:/wd
     working_dir: /wd
     entrypoint:
-      - /usr/bin/perl
+      - /wd/annovar.sh
     command:
-      - /usr/local/src/annovar/annotate_variation.pl
       - --help
