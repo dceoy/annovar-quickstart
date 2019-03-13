@@ -86,10 +86,10 @@ else
   [[ ${#ARGS[@]} -ne 0 ]] && VCF_FILES=(${ARGS[@]})
   cp "${VCF_FILES[*]}" "${OUTPUT_DIR}"
   cd "${OUTPUT_DIR}"
-  for v in ${#ARGS[@]}; do
+  for v in ${VCF_FILES[@]}; do
     table_annovar.pl \
-      "${v}" \
-      humandb/ \
+      "$(basename ${v})" \
+      ../humandb/ \
       -buildver "${BUILD_VER}" \
       -out myanno \
       -remove \
