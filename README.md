@@ -1,10 +1,17 @@
 annovar-quickstart
 ==================
 
-Docker-based Quickstart Kit for ANNOVAR
+Docker-based ANNOVAR Quickstart Kit for VCF files
 
-Usage
------
+Requirements
+------------
+
+- Git
+- Docker
+- Docker Compose
+
+Getting started
+---------------
 
 1.  Check out the repository.
 
@@ -19,20 +26,31 @@ Usage
     $ cp /path/to/annovar.tar.gz build/
     ```
 
-3.  Build a Docker image.
+3.  Prepare input VCF files.
+
+    The following step uses `ex2.vcf` in `annovar.tar.gz` as an example.
+
+    ```sh
+    $ mkdir input
+    $ cd input
+    $ tar xvf ../build/annovar.latest.tar.gz annovar/example/ex2.vcf
+    $ cd -
+    ```
+
+4.  Build a Docker image.
 
     ```sh
     $ docker-compose build --pull
     ```
 
-4.  Download annotation databases into `humandb/`.
+5.  Download annotation databases into `humandb/`.
 
     ```sh
-    $ docker-compose run --rm annovar --debug --downdb
+    $ docker-compose run --rm annovar --downdb
     ```
 
-5.  Annotate the variants in `ex2.vcf` in `annovar.tar.gz`.
+6.  Annotate variants in VCF files.
 
     ```sh
-    $ docker-compose run --rm annovar --debug
+    $ docker-compose run --rm annovar input/annovar/example/ex2.vcf
     ```

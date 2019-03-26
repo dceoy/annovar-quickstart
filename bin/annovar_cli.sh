@@ -1,15 +1,17 @@
 #!/usr/bin/env bash
 #
 # Usage:
-#   annovar.sh --downdb
-#   annovar.sh <vcf>...
+#   annovar.sh [--downdb] [<vcf>...]
 #
 # Description:
 #   Run ANNOVAR for VCF files
 #
 # Options:
-#   --downdb
+#   --downdb      Download database files
 #   -h, --help    Print usage
+#
+# Arguments:
+#   <vcf>...      Paths to input VCF files
 
 set -e
 SCRIPT_PATH=$(realpath "${0}")
@@ -22,9 +24,6 @@ DB_SH="${BIN_DIR}/annovar_db.sh"
 VCF_SH="${BIN_DIR}/annovar_vcf.sh"
 DB_DIR="${PWD}/humandb"
 OUTPUT_DIR="${PWD}/output"
-VCF_FILES=(
-  /usr/local/src/annovar/example/ex2.vcf
-)
 
 ARGS=()
 DOWNDB=0
@@ -33,7 +32,7 @@ case "${OSTYPE}" in
     THREAD=$(system_profiler SPHardwareDataType | sed -ne 's/ \+Total Number of Cores: \([0-9]\+\)/\1/p')
     ;;
   linux*)
-    THREAD=$(grep -e '^processor\s\+:' /proc/cpuinfo)
+    THREAD=$(grep -ce '^processor\s\+:' /proc/cpuinfo)
     ;;
   * )
     THREAD=''
@@ -59,29 +58,29 @@ function abort {
 while [[ -n "${1}" ]]; do
   case "${1}" in
     '--downdb' )
-      DOWNDB=1 && shift 1 && break
+      DOWNDB=1 && shift 1
       ;;
     '-h' | '--help' )
       print_usage && exit 0
       ;;
     * )
-      ARGS+=("${1}")
+      ARGS+=("${1}") && shift 1
       ;;
   esac
 done
+VCF_FILES=("${ARGS[@]}")
 
 set -u
 
 if [[ ${DOWNDB} -eq 1 ]]; then
   [[ -d "${DB_DIR}" ]] || mkdir "${DB_DIR}"
   ${DB_SH} "${DB_DIR}"
-else
+fi
+
+if [[ ${#ARGS[@]} -ne 0 ]]; then
   [[ -d "${OUTPUT_DIR}" ]] || mkdir "${OUTPUT_DIR}"
-  [[ ${#ARGS[@]} -ne 0 ]] && VCF_FILES=("${ARGS[@]}")
-  cp "${VCF_FILES[*]}" "${OUTPUT_DIR}"
-  cd "${OUTPUT_DIR}"
   for v in "${VCF_FILES[@]}"; do
-    p=$(basename "${v}")
-    ${VCF_SH} "${p}" "${DB_DIR}" "${THREAD}"
+    t="${OUTPUT_DIR}/"$(basename "${v}")
+    ${VCF_SH} "${v}" "${DB_DIR}" "${t}" "${THREAD}"
   done
 fi
