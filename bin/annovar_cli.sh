@@ -12,28 +12,33 @@
 #   -h, --help    Print usage
 
 set -e
+SCRIPT_PATH=$(realpath "${0}")
 [[ "${1}" = '--debug' ]] \
   && set -x \
   && shift 1
 
-DB_DIR='./humandb'
-OUTPUT_DIR='./output'
-BUILD_VER='hg19'
-DBS=(
-  cytoBand
-)
-WEB_DBS=(
-  refGene
-  exac03
-  avsnp147
-  dbnsfp30a
-)
+BIN_DIR=$(dirname "${SCRIPT_PATH}")
+DB_SH="${BIN_DIR}/annovar_db.sh"
+VCF_SH="${BIN_DIR}/annovar_vcf.sh"
+DB_DIR="${PWD}/humandb"
+OUTPUT_DIR="${PWD}/output"
 VCF_FILES=(
   /usr/local/src/annovar/example/ex2.vcf
 )
 
 ARGS=()
 DOWNDB=0
+case "${OSTYPE}" in
+  darwin*)
+    THREAD=$(system_profiler SPHardwareDataType | sed -ne 's/ \+Total Number of Cores: \([0-9]\+\)/\1/p')
+    ;;
+  linux*)
+    THREAD=$(grep -e '^processor\s\+:' /proc/cpuinfo)
+    ;;
+  * )
+    THREAD=''
+    ;;
+esac
 
 function print_usage {
   sed -ne '1,2d; /^#/!q; s/^#$/# /; s/^# //p;' "${SCRIPT_PATH}"
@@ -60,7 +65,7 @@ while [[ -n "${1}" ]]; do
       print_usage && exit 0
       ;;
     * )
-      ARGS+=( ${1} )
+      ARGS+=("${1}")
       ;;
   esac
 done
@@ -69,33 +74,14 @@ set -u
 
 if [[ ${DOWNDB} -eq 1 ]]; then
   [[ -d "${DB_DIR}" ]] || mkdir "${DB_DIR}"
-  [[ ${#ARGS[@]} -ne 0 ]] && WEB_DBS=(${ARGS[@]})
-  for f in "${DBS[@]}"; do
-    annotate_variation.pl \
-      -buildver "${BUILD_VER}" -downdb \
-     "${f}" "${DB_DIR}"
-  done
-  for f in "${WEB_DBS[@]}"; do
-    annotate_variation.pl \
-      -buildver "${BUILD_VER}" -downdb \
-      -webfrom annovar \
-     "${f}" "${DB_DIR}"
-  done
+  ${DB_SH} "${DB_DIR}"
 else
   [[ -d "${OUTPUT_DIR}" ]] || mkdir "${OUTPUT_DIR}"
-  [[ ${#ARGS[@]} -ne 0 ]] && VCF_FILES=(${ARGS[@]})
+  [[ ${#ARGS[@]} -ne 0 ]] && VCF_FILES=("${ARGS[@]}")
   cp "${VCF_FILES[*]}" "${OUTPUT_DIR}"
   cd "${OUTPUT_DIR}"
-  for v in ${VCF_FILES[@]}; do
-    table_annovar.pl \
-      "$(basename ${v})" \
-      ../humandb/ \
-      -buildver "${BUILD_VER}" \
-      -out myanno \
-      -remove \
-      -protocol refGene,cytoBand,exac03,avsnp147,dbnsfp30a \
-      -operation g,r,f,f,f \
-      -nastring . \
-      -vcfinput
+  for v in "${VCF_FILES[@]}"; do
+    p=$(basename "${v}")
+    ${VCF_SH} "${p}" "${DB_DIR}" "${THREAD}"
   done
 fi

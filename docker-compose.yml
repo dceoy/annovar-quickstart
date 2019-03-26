@@ -20,6 +20,6 @@ services:
       - .:/wd
     working_dir: /wd
     entrypoint:
-      - /wd/annovar.sh
+      - /wd/bin/annovar_cli.sh
     command:
-      - --help
+      - --downdb
