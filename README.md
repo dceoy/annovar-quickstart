@@ -51,25 +51,25 @@ Requirements:
 2.  Download annotation databases into `humandb/`.
 
     ```sh
-    $ docker-compose run --rm annovar-vcf-cli --downdb
+    $ docker-compose run --rm annovar --downdb
     ```
 
 3.  Annotate variants in VCF files.
 
     ```sh
-    $ docker-compose run --rm annovar-vcf-cli input/annovar/example/ex2.vcf
+    $ docker-compose run --rm annovar input/annovar/example/ex2.vcf
     ```
 
 Configuration
 -------------
 
-- `build/bin/annovar_cli.sh`
+- `bin/annovar_cli.sh`
   - Command-line interface
-- `build/bin/annovar_db.sh`
+- `bin/annovar_db.sh`
   - Database file downloader
     - Wrappers of `annotate_variation.pl` and others.
   - Edit this script to specify the databases to download
-- `build/bin/annovar_vcf.sh`
+- `bin/annovar_vcf.sh`
   - Variant annotator for VCF files
     - Wrapper of `table_annovar.pl`
   - Edit this script to specify the databases to use
@@ -78,7 +78,7 @@ Usage
 -----
 
 ```sh
-$ docker-compose run --rm annovar-vcf-cli --help
+$ docker-compose run --rm annovar --help
 ANNOVAR execution kit for VCF files
 
 Usage:

@@ -1,7 +1,6 @@
 FROM ubuntu:latest
 
 ADD annovar.latest.tar.gz /usr/local/src/
-ADD bin /tmp/
 
 RUN set -e \
       && apt-get -y update \
@@ -13,8 +12,6 @@ RUN set -e \
       && rm -rf /var/lib/apt/lists/*
 
 RUN set -e \
-      && mv /tmp/bin/* /usr/local/bin/ \
-      && rm -rf /tmp/bin \
       && find /usr/local/src/annovar -type f -maxdepth 1 -executable \
         | xargs -i ln -s {} /usr/local/bin
 

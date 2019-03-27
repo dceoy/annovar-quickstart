@@ -2,13 +2,13 @@
 version: '3'
 
 services:
-  annovar-vcf-cli:
-    container_name: annovar-vcf-cli
+  annovar:
+    container_name: annovar
     build:
       context: build
       args:
         http_proxy: ${http_proxy}
-    image: dceoy/annovar-vcf-cli:latest
+    image: dceoy/annovar:latest
     user: ${UID}:${GID}
     userns_mode: host
     environment:
@@ -18,9 +18,10 @@ services:
       HTTPS_PROXY: ${HTTPS_PROXY}
     volumes:
       - .:/wd
+      - ./bin:/opt/bin
     working_dir: /wd
     entrypoint:
-      - /usr/local/bin/annovar_cli.sh
+      - /opt/bin/annovar_cli.sh
     command:
       - --db-dir=./humandb
       - --out-dir=./output
