@@ -64,7 +64,7 @@ Configuration
 -------------
 
 - `bin/annovar_cli.sh`
-  - Command-line interface
+  - Command-line interface controller
 - `bin/annovar_db.sh`
   - Database file downloader
     - Wrappers of `annotate_variation.pl` and others.

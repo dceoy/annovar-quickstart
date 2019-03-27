@@ -17,9 +17,9 @@ tar xvf chromFa.tar.gz -C hg19_seq
 rm -f chromFa.tar.gz
 
 annotate_variation.pl -buildver hg19 -downdb -webfrom annovar refGene .
-retrieve_seq_from_fasta.pl /wd/humandb/hg19_refGene.txt -seqdir /wd/humandb/hg19_seq -format refGene -outfile /wd/humandb/hg19_refGeneMrna.fa
+retrieve_seq_from_fasta.pl hg19_refGene.txt -seqdir hg19_seq -format refGene -outfile hg19_refGeneMrna.fa
 annotate_variation.pl -buildver hg19 -downdb -webfrom annovar ensGene .
-retrieve_seq_from_fasta.pl /wd/humandb/hg19_ensGene.txt -seqdir /wd/humandb/hg19_seq -format ensGene -outfile /wd/humandb/hg19_ensGeneMrna.fa
+retrieve_seq_from_fasta.pl hg19_ensGene.txt -seqdir hg19_seq -format ensGene -outfile hg19_ensGeneMrna.fa
 
 annotate_variation.pl -buildver hg19 -downdb cytoBand .
 annotate_variation.pl -buildver hg19 -downdb -webfrom annovar exac03 .

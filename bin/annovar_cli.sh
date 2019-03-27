@@ -50,8 +50,7 @@ function abort {
     if [[ ${#} -eq 0 ]]; then
       cat -
     else
-      # shellcheck disable=SC2086
-      echo "$(basename ${SCRIPT_PATH}): ${*}"
+      echo "${REPO_NAME}: ${*}"
     fi
   } >&2
   exit 1
