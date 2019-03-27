@@ -1,32 +1,43 @@
-annovar-quickstart
-==================
+annovar-vcf-cli
+===============
 
-Docker-based ANNOVAR Quickstart Kit for VCF files
+ANNOVAR execution kit for VCF files
 
-Requirements
-------------
+Getting started
+---------------
+
+Requirements:
 
 - Git
 - Docker
 - Docker Compose
 
-Getting started
----------------
+##### Build a Docker image
 
-1.  Check out the repository.
+1.  Download `annovar.tar.gz` from [ANNOVAR's website](http://www.openbioinformatics.org/annovar/annovar_download_form.php).
+
+2.  Check out the repository.
 
     ```sh
-    $ git clone https://github.com/dceoy/annovar-quickstart.git
-    $ cd annovar-quickstart
+    $ git clone https://github.com/dceoy/annovar-vcf-cli.git
+    $ cd annovar-vcf-cli
     ```
 
-2.  Copy `annovar.tar.gz` into `build/`.
+3.  Copy `annovar.tar.gz` into `build/`.
 
     ```sh
     $ cp /path/to/annovar.tar.gz build/
     ```
 
-3.  Prepare input VCF files.
+4.  Build a Docker image.
+
+    ```sh
+    $ docker-compose build --pull
+    ```
+
+##### Run ANNOVAR
+
+1.  Prepare input VCF files.
 
     The following step uses `ex2.vcf` in `annovar.tar.gz` as an example.
 
@@ -37,20 +48,53 @@ Getting started
     $ cd -
     ```
 
-4.  Build a Docker image.
+2.  Download annotation databases into `humandb/`.
 
     ```sh
-    $ docker-compose build --pull
+    $ docker-compose run --rm annovar-vcf-cli --downdb
     ```
 
-5.  Download annotation databases into `humandb/`.
+3.  Annotate variants in VCF files.
 
     ```sh
-    $ docker-compose run --rm annovar --downdb
+    $ docker-compose run --rm annovar-vcf-cli input/annovar/example/ex2.vcf
     ```
 
-6.  Annotate variants in VCF files.
+Configuration
+-------------
 
-    ```sh
-    $ docker-compose run --rm annovar input/annovar/example/ex2.vcf
-    ```
+- `build/bin/annovar_cli.sh`
+  - Command-line interface
+- `build/bin/annovar_db.sh`
+  - Database file downloader
+    - Wrappers of `annotate_variation.pl` and others.
+  - Edit this script to specify the databases to download
+- `build/bin/annovar_vcf.sh`
+  - Variant annotator for VCF files
+    - Wrapper of `table_annovar.pl`
+  - Edit this script to specify the databases to use
+
+Usage
+-----
+
+```sh
+$ docker-compose run --rm annovar-vcf-cli --help
+ANNOVAR execution kit for VCF files
+
+Usage:
+  annovar_cli.sh [--downdb] [--db-dir=<path>] [--out-dir=<path>]
+                 [--thread=<int>] [<vcf>...]
+  annovar_cli.sh -h|--help
+  annovar_cli.sh --version
+
+Options:
+  --downdb          Download database files
+  --db-dir=<path>   Set a database directory [default: ./humandb]
+  --out-dir=<path>  Set an output directory [default: ./output]
+  --thread=<int>    Limit cores for multithreading
+  -h, --help        Print usage information
+  --version         Print version information
+
+Arguments:
+  <vcf>...          Paths to input VCF files
+```

@@ -2,13 +2,13 @@
 version: '3'
 
 services:
-  annovar:
-    container_name: annovar
+  annovar-vcf-cli:
+    container_name: annovar-vcf-cli
     build:
       context: build
       args:
         http_proxy: ${http_proxy}
-    image: dceoy/annovar:latest
+    image: dceoy/annovar-vcf-cli:latest
     user: ${UID}:${GID}
     userns_mode: host
     environment:
@@ -20,7 +20,9 @@ services:
       - .:/wd
     working_dir: /wd
     entrypoint:
-      - /wd/bin/annovar_cli.sh
+      - /usr/local/bin/annovar_cli.sh
     command:
+      - --db-dir=./humandb
+      - --out-dir=./output
       - --downdb
       - /usr/local/src/annovar/example/ex2.vcf

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 #
 # Usage:
-#   annovar_db.sh <vcf> <db_dir> <tag> [<thread>]
+#   annovar_vcf.sh <vcf> <db_dir> <tag> [<thread>]
 #
 # Arguments:
 #   <vcf>         Path to an input VCF file
