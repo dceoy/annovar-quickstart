@@ -13,7 +13,7 @@
 # Arguments:
 #   <vcf>...      Paths to input VCF files
 
-set -e
+set -ue
 SCRIPT_PATH=$(realpath "${0}")
 [[ "${1}" = '--debug' ]] \
   && set -x \
@@ -25,7 +25,7 @@ VCF_SH="${BIN_DIR}/annovar_vcf.sh"
 DB_DIR="${PWD}/humandb"
 OUTPUT_DIR="${PWD}/output"
 
-ARGS=()
+VCF_FILES=()
 DOWNDB=0
 case "${OSTYPE}" in
   darwin*)
@@ -40,7 +40,7 @@ case "${OSTYPE}" in
 esac
 
 function print_usage {
-  sed -ne '1,2d; /^#/!q; s/^#$/# /; s/^# //p;' "${SCRIPT_PATH}"
+  sed -ne '1,2d; /^#/!q; s/^#$/# /; s/^# //p;' "${1}"
 }
 
 function abort {
@@ -55,29 +55,26 @@ function abort {
   exit 1
 }
 
-while [[ -n "${1}" ]]; do
-  case "${1}" in
+for a in "${@}"; do
+  case "${a}" in
     '--downdb' )
-      DOWNDB=1 && shift 1
+      DOWNDB=1
       ;;
     '-h' | '--help' )
-      print_usage && exit 0
+      print_usage "${SCRIPT_PATH}" && exit 0
       ;;
     * )
-      ARGS+=("${1}") && shift 1
+      VCF_FILES+=("${a}")
       ;;
   esac
 done
-VCF_FILES=("${ARGS[@]}")
-
-set -u
 
 if [[ ${DOWNDB} -eq 1 ]]; then
   [[ -d "${DB_DIR}" ]] || mkdir "${DB_DIR}"
   ${DB_SH} "${DB_DIR}"
 fi
 
-if [[ ${#ARGS[@]} -ne 0 ]]; then
+if [[ ${#VCF_FILES[@]} -ne 0 ]]; then
   [[ -d "${OUTPUT_DIR}" ]] || mkdir "${OUTPUT_DIR}"
   for v in "${VCF_FILES[@]}"; do
     t="${OUTPUT_DIR}/"$(basename "${v}")
