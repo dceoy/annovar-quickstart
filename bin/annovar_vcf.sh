@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 #
 # Usage:
-#   annovar_vcf.sh <vcf> <db_dir> <tag> [<thread>]
+#   annovar_vcf.sh <vcf> <db_dir> <tag> <thread>
 #
 # Arguments:
 #   <vcf>         Path to an input VCF file
@@ -11,15 +11,11 @@
 
 set -uex
 
-if [[ ${#} -ge 4 ]]; then
-  THREAD="${4}"
-else
-  THREAD=1
-fi
 
 VCF="${1}"
 DB_DIR="${2}"
 TAG="${3}"
+THREAD="${4}"
 
 table_annovar.pl \
   "${VCF}" "${DB_DIR}" \
@@ -30,4 +26,4 @@ table_annovar.pl \
   -operation g,g,r,f,f,f,f,f,f,f,f \
   -nastring . \
   -vcfinput \
-  -thread ${THREAD}
+  -thread "${THREAD}"

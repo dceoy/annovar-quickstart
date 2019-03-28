@@ -100,7 +100,7 @@ done
 if [[ -z "${THREAD}" ]]; then
   case "${OSTYPE}" in
     darwin* )
-      THREAD=$(system_profiler SPHardwareDataType | sed -ne 's/ \+Total Number of Cores: \([0-9]\+\)/\1/p')
+      THREAD=$(sysctl -n hw.ncpu)
       ;;
     linux* )
       THREAD=$(grep -ce '^processor\s\+:' /proc/cpuinfo)
