@@ -92,7 +92,7 @@ while [[ ${#} -ge 1 ]]; do
       abort "invalid option: ${1}"
       ;;
     * )
-      VCF_FILES+=("${a}") && shift 1
+      VCF_FILES+=("${1}") && shift 1
       ;;
   esac
 done
