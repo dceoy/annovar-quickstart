@@ -20,9 +20,11 @@
 #   <vcf>...          Paths to input VCF files
 
 set -ue
-for a in "${@}"; do
-  [[ "${a}" = '--debug' ]] && set -x && break
-done
+if [[ ${#} -ge 1 ]]; then
+  for a in "${@}"; do
+    [[ "${a}" = '--debug' ]] && set -x && break
+  done
+fi
 
 REPO_NAME='annovar-vcf-cli'
 REPO_VERSION='v0.0.1'
