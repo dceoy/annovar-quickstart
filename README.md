@@ -14,7 +14,7 @@ Requirements:
 
 ##### Build a Docker image
 
-1.  Download `annovar.tar.gz` from [ANNOVAR's website](http://www.openbioinformatics.org/annovar/annovar_download_form.php).
+1.  Download `annovar.tar.gz` from [ANNOVAR's website](http://annovar.openbioinformatics.org/).
 
 2.  Check out the repository.
 
