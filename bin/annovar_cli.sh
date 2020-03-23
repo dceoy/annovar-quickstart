@@ -27,7 +27,7 @@ if [[ ${#} -ge 1 ]]; then
 fi
 
 REPO_NAME='annovar-vcf-cli'
-REPO_VERSION='v0.0.1'
+REPO_VERSION='v0.1.0'
 SCRIPT_PATH=$(realpath "${0}")
 BIN_DIR=$(dirname "${SCRIPT_PATH}")
 DB_SH="${BIN_DIR}/annovar_db.sh"
